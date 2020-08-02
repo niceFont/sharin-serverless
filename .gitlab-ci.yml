@@ -29,13 +29,10 @@ test:
 deploy:
   stage: deploy
   before_script:
-    - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" 
-    - test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
-    - test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-    - test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
-    - echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
-    - brew tap aws/tap
-    - brew install aws-sam-cli
+    - apt-get update
+    - apt-get install python3 && apt-get install python3-pip
+    - pip3 install awscli --upgrade
+    - pip3 install aws-sam-cli --upgrade
   script:
     - sam package --template-file template.yaml --output-template-file deploy.yaml --s3-bucket sharin-serverless --region us-east-1 
     - sam deploy --template-file /home/nce/Projects/sharin-serverless/sharin-auth/deploy.yaml --stack-name SharinServerless --capabilities CAPABILITY_IAM --region us-east-1
