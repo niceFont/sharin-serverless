@@ -22,7 +22,6 @@ install:
 test:
   stage: test
   script:
-    - ls layers/nodejs
     - npm run test
   coverage: '/Code coverage: \d+\.\d+/'
 
@@ -30,7 +29,7 @@ deploy:
   stage: deploy
   before_script:
     - apt-get update
-    - apt-get install python3 && apt-get install python3-pip
+    - apt-get -y install python3 && apt-get -y install python3-pip
     - pip3 install awscli --upgrade
     - pip3 install aws-sam-cli --upgrade
   script:
