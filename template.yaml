@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description:
+  sharin-auth
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  DatabaseUser:
+    Description: MySQL local user
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: 'WobbleUser'
+  DatabasePassword:
+    Description: MySQL password
+    Type: 'String'
+    Default: '{{resolve:secretsmanager:wobble:SecretString:password}}'
+    NoEcho: true
+  DatabaseHost:
+    Description: MySQL host
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: 'WobbleHost'
+
+Resources:
+
+  SharinApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      Auth:
+        DefaultAuthorizer: SharinLambdaAuthorizer
+        Authorizers: 
+          SharinLambdaAuthorizer:
+            FunctionPayloadType: REQUEST
+            FunctionArn: !GetAtt SharinApiAuthFunction.Arn
+            Identity:
+              Headers:
+                - auth
+              ReauthorizeEvery: 300 
+  AuthSignUpFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: ./auth-signup
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          DB_USER: !Ref DatabaseUser
+          DB_HOST: !Ref DatabaseHost
+          DB_PASSWORD: !Ref DatabasePassword
+      Layers:
+        - !Ref SharinDependencies
+      Events:
+        SignupApi:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            RestApiId: !Ref SharinApi
+            Path: /signup
+            Method: post
+  AuthLoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./auth-login
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          DB_USER: !Ref DatabaseUser
+          DB_HOST: !Ref DatabaseHost
+          DB_PASSWORD: !Ref DatabasePassword
+      Layers:
+        - !Ref SharinDependencies
+      Events:
+        LoginApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SharinApi
+            Path: /login
+            Method: post
+
+  SharinApiAuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: auth/
+      Handler: authorizer.handler
+      Runtime: nodejs12.x
+      Layers:
+        - !Ref SharinDependencies
+
+  SharinDependencies:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: sharin-auth-dependencies
+      Description: Shared Node Modules
+      CompatibleRuntimes:
+        - nodejs12.x
+      ContentUri: ./layers/
+      LicenseInfo: MIT
+      RetentionPolicy: Delete
