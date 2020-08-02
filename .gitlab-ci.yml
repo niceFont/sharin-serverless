@@ -15,7 +15,7 @@ install:
   script:
     - npm ci
     - cd layers/nodejs
-    - ll
+    - ls
     - npm ci
     - cd ../..
 
