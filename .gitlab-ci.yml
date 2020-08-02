@@ -1,4 +1,4 @@
-image: node:latest
+image: python3.7-nodejs12 
 stages:
   - install
   - test
@@ -29,9 +29,8 @@ deploy:
   stage: deploy
   before_script:
     - apt-get update
-    - apt-get -y install python3.7
-    - python3.7 -m pip install awscli --upgrade
-    - python3.7 -m pip install aws-sam-cli --upgrade
+    - apt-get -y install python3-pip
+    - pip3 install aws-sam-cli
   script:
     - sam package --template-file template.yaml --output-template-file deploy.yaml --s3-bucket sharin-serverless --region us-east-1 
     - sam deploy --template-file /home/nce/Projects/sharin-serverless/sharin-auth/deploy.yaml --stack-name SharinServerless --capabilities CAPABILITY_IAM --region us-east-1
