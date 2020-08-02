@@ -1,4 +1,4 @@
-image: python3.7-nodejs12 
+image: nikolaik/python3.7-nodejs12 
 stages:
   - install
   - test
