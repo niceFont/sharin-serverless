@@ -32,6 +32,7 @@ deploy:
     - apt-get -y install python3-pip
     - pip3 install aws-sam-cli
   script:
+    - find . -mtime +10950 -print -exec touch {} \;
     - sam package --template-file template.yaml --output-template-file deploy.yaml --s3-bucket sharin-serverless --region us-east-1 
     - sam deploy --template-file /home/nce/Projects/sharin-serverless/sharin-auth/deploy.yaml --stack-name SharinServerless --capabilities CAPABILITY_IAM --region us-east-1
   only:
