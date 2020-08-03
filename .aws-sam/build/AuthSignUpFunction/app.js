@@ -7,8 +7,7 @@ const isAWS = !!process.env.AWS;
     database: 'wobble',
   },
 });
-/* istanbul ignore next */ const { isSamePassword } = require(isAWS ? '/opt/nodejs/utils/hash' : '../layers/nodejs/utils/hash');
-/* istanbul ignore next */ const { getUser } = require(isAWS ? '/opt/nodejs/utils/user' : '../layers/nodejs/utils/user');
+/* istanbul ignore next */ const { generateHash } = require(isAWS ? '/opt/nodejs/utils/hash' : '../layers/nodejs/utils/hash');
 
 /**
  *
@@ -26,36 +25,22 @@ const isAWS = !!process.env.AWS;
 exports.lambdaHandler = async (event) => {
   try {
     console.log(event);
-    const { username, password } = JSON.parse(event.body);
-    if (!username || !password) {
+    const { username, email, password } = JSON.parse(event.body);
+    if (!username || !email || !password) {
       return {
         statusCode: 400,
       };
     }
-    const user = await getUser(mysql, { username });
-    if (!user) {
-      return {
-        statusCode: 400,
-        message: 'User not Found',
-      };
-    }
-
-    if (!await isSamePassword(password, user.password)) {
-      return {
-        statusCode: 400,
-        message: "Username and Password don't match",
-      };
-    }
-    await mysql.end();
+    const hashedPassword = await generateHash(password);
+    await mysql.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
     return {
       statusCode: 200,
-      message: 'Successfully logged in',
-      headers: {
-        'Set-Cookie': 'u=randomuser',
-      },
     };
   } catch (err) {
     console.log(err);
-    return err;
+    return {
+      statusCode: 500,
+      err,
+    };
   }
 };
