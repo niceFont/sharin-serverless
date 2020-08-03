@@ -27,7 +27,6 @@ describe('auth-login', () => {
   it('returns status 200', async () => {
     await expect(lambdaHandler(event)).resolves.toEqual({
       statusCode: 200,
-      message: 'Successfully logged in',
       headers: {
         'Set-Cookie': 'u=randomuser',
       },
@@ -45,7 +44,6 @@ describe('auth-login', () => {
     getUser.mockResolvedValue();
     await expect(lambdaHandler(event)).resolves.toEqual({
       statusCode: 400,
-      message: 'User not Found',
     });
   });
 
@@ -54,7 +52,6 @@ describe('auth-login', () => {
 
     await expect(lambdaHandler(event)).resolves.toEqual({
       statusCode: 400,
-      message: "Username and Password don't match",
     });
   });
 
