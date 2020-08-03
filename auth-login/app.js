@@ -39,8 +39,8 @@ exports.lambdaHandler = async (event) => {
         message: 'User not Found',
       };
     }
-
-    if (!await isSamePassword(password, user.password)) {
+    const isSame = await isSamePassword(password, user.password);
+    if (!isSame) {
       return {
         statusCode: 400,
         message: "Username and Password don't match",
