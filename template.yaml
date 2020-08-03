@@ -47,6 +47,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
+          AWS: true
           DB_USER: !Ref DatabaseUser
           DB_HOST: !Ref DatabaseHost
           DB_PASSWORD: !Ref DatabasePassword
@@ -67,6 +68,7 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
+          AWS: true
           DB_USER: !Ref DatabaseUser
           DB_HOST: !Ref DatabaseHost
           DB_PASSWORD: !Ref DatabasePassword

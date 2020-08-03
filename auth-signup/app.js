@@ -38,6 +38,9 @@ exports.lambdaHandler = async (event) => {
     };
   } catch (err) {
     console.log(err);
-    return err;
+    return {
+      statusCode: 500,
+      err,
+    };
   }
 };

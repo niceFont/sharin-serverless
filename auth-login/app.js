@@ -49,12 +49,16 @@ exports.lambdaHandler = async (event) => {
     await mysql.end();
     return {
       statusCode: 200,
+      message: 'Successfully logged in',
       headers: {
         'Set-Cookie': 'u=randomuser',
       },
     };
   } catch (err) {
     console.log(err);
-    return err;
+    return {
+      statusCode: 500,
+      err,
+    };
   }
 };

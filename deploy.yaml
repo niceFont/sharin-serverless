@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: sharin-auth
+Description: sharin-api
 Globals:
   Function:
     Timeout: 3
@@ -39,7 +39,7 @@ Resources:
   AuthSignUpFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://sharin-serverless/6010175dd9c5231c2951c264c22b94ff
+      CodeUri: s3://sharin-serverless/c550272c8c954ebe87bfacccf883d276
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
       Environment:
@@ -64,7 +64,7 @@ Resources:
   AuthLoginFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://sharin-serverless/0548cb2fcaf286629b94589f4052357a
+      CodeUri: s3://sharin-serverless/fd69c95c42effbe82142ea85d0360e35
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
       Environment:
@@ -89,9 +89,11 @@ Resources:
   SharinApiAuthFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://sharin-serverless/af87aec085e5cf1fdfead741fb897951
+      CodeUri: s3://sharin-serverless/66e26dbf7090760a9fca1747002447c5
       Handler: authorizer.handler
       Runtime: nodejs12.x
+      Layers:
+      - Ref: SharinDependencies
   SharinDependencies:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -99,6 +101,6 @@ Resources:
       Description: Shared Node Modules
       CompatibleRuntimes:
       - nodejs12.x
-      ContentUri: s3://sharin-serverless/ec318d806d333870e06a068fbf8e8457
+      ContentUri: s3://sharin-serverless/6e63e23e7bb3b5b05862289ee8663769
       LicenseInfo: MIT
       RetentionPolicy: Delete
