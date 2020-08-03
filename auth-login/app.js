@@ -1,5 +1,5 @@
 const isAWS = !!process.env.AWS;
-/* istanbul ignore next */ const mysql = require(isAWS ? 'mysql' : '../layers/nodejs/node_modules/serverless-mysql')({
+/* istanbul ignore next */ const mysql = require(isAWS ? 'serverless-mysql' : '../layers/nodejs/node_modules/serverless-mysql')({
   config: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
