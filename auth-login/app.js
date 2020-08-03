@@ -36,20 +36,17 @@ exports.lambdaHandler = async (event) => {
     if (!user) {
       return {
         statusCode: 400,
-        message: 'User not Found',
       };
     }
     const isSame = await isSamePassword(password, user.password);
     if (!isSame) {
       return {
         statusCode: 400,
-        message: "Username and Password don't match",
       };
     }
     await mysql.end();
     return {
       statusCode: 200,
-      message: 'Successfully logged in',
       headers: {
         'Set-Cookie': 'u=randomuser',
       },
