@@ -4,7 +4,7 @@ describe('user', () => {
   let fakeClient;
   beforeEach(() => {
     fakeClient = {
-      query: jest.fn().mockResolvedValue({ user: 'hey' }),
+      query: jest.fn().mockResolvedValue([{ user: 'hey' }]),
     };
   });
   it('gets the user with userid', async () => {

@@ -27,6 +27,7 @@ describe('auth-login', () => {
   it('returns status 200', async () => {
     await expect(lambdaHandler(event)).resolves.toEqual({
       statusCode: 200,
+      message: 'Successfully logged in',
       headers: {
         'Set-Cookie': 'u=randomuser',
       },
