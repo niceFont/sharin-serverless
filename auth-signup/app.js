@@ -31,7 +31,7 @@ exports.lambdaHandler = async (event) => {
         statusCode: 400,
       };
     }
-    const hashedPassword = generateHash(password);
+    const hashedPassword = await generateHash(password);
     await mysql.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
     return {
       statusCode: 200,

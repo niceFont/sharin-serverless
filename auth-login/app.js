@@ -40,7 +40,7 @@ exports.lambdaHandler = async (event) => {
       };
     }
 
-    if (!isSamePassword(password, user.password)) {
+    if (!await isSamePassword(password, user.password)) {
       return {
         statusCode: 400,
         message: "Username and Password don't match",
